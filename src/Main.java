@@ -19,6 +19,27 @@ public class Main {
         }
         solveQueens(chessBoard);
         printChessBoard(chessBoard);
+
+//        int[][] board = {
+//                {7, 0, 2, 0, 5, 0, 6, 0, 0},
+//                {0, 0, 0, 0, 0, 3, 0, 0, 0},
+//                {1, 0, 0, 0, 0, 9, 5, 0, 0},
+//                {8, 0, 0, 0, 0, 0, 0, 9, 0},
+//                {0, 4, 3, 0, 0, 0, 7, 5, 0},
+//                {0, 9, 0, 0, 0, 0, 0, 0, 8},
+//                {0, 0, 9, 7, 0, 0, 0, 0, 5},
+//                {0, 0, 0, 2, 0, 0, 0, 0, 0},
+//                {0, 0, 7, 0, 4, 0, 2, 0, 3}
+//        };
+//
+//        printBoard(board);
+//        if(solveBoard(board)) {
+//            System.out.println("solved successfully");
+//        }
+//        else {
+//            System.out.println("unsolvable board");
+//        }
+//        printBoard(board);
     }
 
     public static void printChessBoard(int[][] board) {
@@ -162,6 +183,80 @@ public class Main {
             }
             if (!containsOne) {
                 return false;
+            }
+        }
+        return true;
+    }
+
+    public static void printBoard(int[][] board) {
+        for(int row=0; row<9; row++) {
+            if(row % 3 == 0 && row != 0) {
+                System.out.println("-----------");
+            }
+            for(int col=0; col<9; col++) {
+                if(col % 3 == 0 && col != 0) {
+                    System.out.print("|");
+                }
+                System.out.print(board[row][col]);
+            }
+            System.out.println();
+        }
+    }
+
+    public static boolean isNumInRow(int[][] board, int num, int row) {
+        for(int i=0; i<9; i++) {
+            if(board[row][i] == num) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    public static boolean isNumInCol(int[][] board, int num, int col) {
+        for(int i=0; i<9; i++) {
+            if(board[i][col] == num) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    public static boolean isNumInSquare(int[][] board, int num, int row, int col) {
+        int localSquareRow = row - row % 3;
+        int localSquareCol = col - col % 3;
+        for(int i = localSquareRow; i < localSquareRow + 3; i++) {
+            for(int k = localSquareCol; k < localSquareCol + 3; k++) {
+                if(board[i][k] == num) {
+                    return true;
+                }
+            }
+        }
+        return false;
+    }
+
+    public static boolean isValid(int[][] board, int num, int row, int col) {
+        return !isNumInRow(board, num, row) &&
+                !isNumInCol(board, num, col) &&
+                !isNumInSquare(board, num, row, col);
+    }
+
+    public static boolean solveBoard(int[][] board) {
+        for(int row=0; row<9; row++) {
+            for(int col=0; col<9; col++) {
+                if(board[row][col] == 0) {
+                    for(int numToTry=1; numToTry<10; numToTry++) {
+                        if(isValid(board, numToTry, row, col)) {
+                            board[row][col] = numToTry;
+                            if(solveBoard(board)) {
+                                return true;
+                            }
+                            else {
+                                board[row][col] = 0;
+                            }
+                        }
+                    }
+                    return false;
+                }
             }
         }
         return true;
